@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
-
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
@@ -19,7 +18,7 @@ import { useEffect, useReducer } from 'react'
 import useStyles from './styles';
 import { CartContext } from './context/Context';
 import { NavLink } from 'react-router-dom';
-import { useContext, useState } from 'react'
+import { useContext} from 'react'
 
 function Copyright() {
   return (
@@ -50,13 +49,27 @@ const style = {
 
 
 //start of function
-export default function Clothing() {
+export default function FilteredProducts() {
 
+  //can use custom classes with {class.classname}
   const classes = useStyles();
+  const { cart, setCart, filterBy} = useContext(CartContext);
+  
+  //for handling modal card pop
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
+  //for handling add to cart
+  function handleAdd(card) {
+    console.log(card)
+    setCart([...cart, card]) //add card content to cart
+  }
+
+  //initial state for fetchAPI
   const initialState = {
-    loading: true,
-    post: [],
+    loading: true, //true when loading and no data in post
+    post: [], //empty
     error: ''
   }
 
@@ -75,34 +88,27 @@ export default function Clothing() {
           post: {},
           error: 'Something went wrong'
         }
+      default:
+        return {
+          post: {}
+        }
     }
   }
-
+  
+  
   useEffect(() => {
-    axios.get('https://fakestoreapi.com/products')
+    const URL = `https://fakestoreapi.com/${filterBy}`
+    axios.get(URL)
       .then(response => {
         dispatch({ type: "FETCH_SUCCESS", payload: response.data })
       })
       .catch(error => {
         dispatch({ type: "FETCH_ERROR" })
       })
-  }
+  },[filterBy] //renders if filterBy state changes
   )
-  //for handling modal
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  //for handling add to cart
-  function test(card) {
-    console.log(card)
-    setCart([...cart, card])
-  }
   //context hooks
-  const { cart, setCart } = useContext(CartContext);
-
   const [state, dispatch] = useReducer(reducer, initialState)
-
 
   return (
     <ThemeProvider theme={theme}>
@@ -133,17 +139,15 @@ export default function Clothing() {
         </Box>
         <Container sx={{ py: 8 }} maxWidth="lg">
           {/* End hero unit */}
-          <Grid container spacing={4}>
-            {state.post.map((card) => (
-              <Grid item key={card.id} xs={12} sm={3} md={3}>
+          <Grid container spacing={8}>
+            {state.post.map((card) => ( //for every item in my state.post
+              <Grid item key={card.id} xs={12} sm={4} md={3}>
                 <Card variant="outlined"
-                  sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}
+                  sx={{ height: '100%', maxWidth: '80%', display: 'flex', flexDirection: 'column' }}
                 >
                   <CardMedia
                     component="img"
                     sx={{
-                      // 16:9
-
                       height: '300px',
                       maxWidth: '200px',
                       margin: '10px'
@@ -166,7 +170,8 @@ export default function Clothing() {
                     </Grid>
                   </CardContent>
                   <CardActions>
-                  <Button onClick={() => {handleOpen();test(card);}} size="small">Add</Button>
+                    {/* buttons that triggers modal pop up and at the same time passes the details to be added to the cart */}
+                  <Button onClick={() => {handleOpen();handleAdd(card);}} size="small">Add</Button> 
                   <Button onClick={() => setCart(cart.filter(item => item.title !== card.title))} size="small">Remove</Button>
                   </CardActions>
                 </Card>

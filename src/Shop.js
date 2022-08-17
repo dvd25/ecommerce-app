@@ -16,19 +16,12 @@ function Shop(props) {
 
     return (
         <div>
-            <div> <Stack sx={{ pt: 4 }}
-                            direction="row"
-                            spacing={4}
-                            justifyContent="center"
+            <div> <Stack sx={{ pt: 4 }}direction="row"spacing={4} justifyContent="center"
                         > <Typography variant="h4"> Sort By: </Typography><MenuPopupState/>
                   </Stack>
             </div>
             <div style={{position: 'sticky', top: 0}}>
-            <Stack sx={{ pt: 4 }}
-                            direction="row"
-                            spacing={4}
-                            justifyContent="center"
-                        > 
+            <Stack sx={{ pt: 4 }} direction="row" spacing={4} justifyContent="center"> 
               <Button color="inherit" variant="contained" onClick={()=>topFunction()}>Back To Top</Button>
               <Button component={NavLink} to={'/cart'} variant="contained">Go To Cart ({cart.length})</Button>
               <Button color="error" variant="contained" onClick={()=>setCart([])}>Clear Cart</Button>

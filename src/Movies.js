@@ -14,10 +14,10 @@ import Link from '@mui/material/Link';
 import Modal from '@mui/material/Modal';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
-import { useEffect, useReducer, useState, useContext } from 'react'
+import { useEffect, useReducer, useContext } from 'react'
 import useStyles from './styles';
 import { CartContext } from './context/Context';
-import {NavLink} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function Copyright() {
     return (
@@ -69,6 +69,10 @@ export default function Movies() {
                     post: {},
                     error: 'Something went wrong'
                 }
+            default:
+                return {
+                    post: {}
+                }
         }
     }
 
@@ -80,7 +84,7 @@ export default function Movies() {
             .catch(error => {
                 dispatch({ type: "FETCH_ERROR" })
             })
-    }
+    },[]
     )
 
     const [state, dispatch] = useReducer(reducer, initialState)
@@ -91,7 +95,7 @@ export default function Movies() {
     const handleClose = () => setOpen(false);
 
 
-    function test(card){
+    function test(card) {
         console.log("Added" + card)
         setCart([...cart, card])
     }
@@ -147,15 +151,15 @@ export default function Movies() {
                                         <Typography gutterBottom variant="h5" component="h2">
                                             {card.title}
                                         </Typography>
-                                        <Typography> 
+                                        <Typography>
                                             Price: $5.99
                                         </Typography>
-                                        <Typography variant="body2"> 
+                                        <Typography variant="body2">
                                             {card.synopsis}
                                         </Typography>
                                     </CardContent>
                                     <CardActions>
-                                        <Button onClick={() => {handleOpen();test(card);}} size="small">Add</Button>
+                                        <Button onClick={() => { handleOpen(); test(card); }} size="small">Add</Button>
                                         <Button onClick={() => setCart(cart.filter(item => item.title !== card.title))} size="small">Remove</Button>
 
                                     </CardActions>
@@ -183,7 +187,7 @@ export default function Movies() {
                                     justifyContent="center"
                                 >
                                     <Button component={NavLink} to={'/cart'} variant="contained">Go to cart</Button>
-                                    <Button onClick={handleClose}variant="outlined">Continue shopping</Button>
+                                    <Button onClick={handleClose} variant="outlined">Continue shopping</Button>
                                 </Stack>
                                 <Typography id="modal-modal-description" variant="caption" align="right">
 
